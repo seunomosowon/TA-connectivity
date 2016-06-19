@@ -1,5 +1,5 @@
 socket
 www.google.com:80
 www.yahoo.com:80
-4.2.2.2,53
-8.8.8.8,53
+4.2.2.2:53
+8.8.8.8:53
