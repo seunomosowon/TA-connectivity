@@ -10,11 +10,11 @@ This app adds 3 modular inputs to any Splunk installation:
 
 Sample CSV:
 ```CSV
-hostname,port,socketi,url
-www.google.com,80,www.google.com:80,https://encrypted.google.com
-www.yahoo.com,80,www.yahoo.com:80,http://www.yahoo.com
-4.2.2.2,53,4.2.2.2:53,http://www.twiter.com
-8.8.8.8,53,8.8.8.8:53,http://www.linkedin.com
+hostname,port,url
+www.google.com,80,https://encrypted.google.com
+www.yahoo.com,80,http://www.yahoo.com
+4.2.2.2,53,http://www.twiter.com
+8.8.8.8,53,http://www.linkedin.com
 
 ```
 
