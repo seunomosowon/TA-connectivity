@@ -87,8 +87,7 @@ host_field = socket
 workers = 4
 interval = 600
 disabled=true
-````
-
+```
 
 # Testing
 
