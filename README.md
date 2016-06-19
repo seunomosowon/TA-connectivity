@@ -21,7 +21,7 @@ This also allows the specification of of how many threads should be used to hand
 hostname,port,url
 www.google.com,80,https://encrypted.google.com
 www.yahoo.com,80,http://www.yahoo.com
-4.2.2.2,53,http://www.twiter.com
+4.2.2.2,53,http://www.twitter.com
 8.8.8.8,53,http://www.linkedin.com
 
 ```
