@@ -1,4 +1,6 @@
+"""
+This includes constants that may be used in the connectivity_libs module.
+"""
 
-PASSWORD_PLACEHOLDER = 'encrypted'
 WEBTIMEOUT = 5
 NUM_OF_WORKER_PROCESSES = 4

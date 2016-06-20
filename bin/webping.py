@@ -6,7 +6,7 @@ Author:     seunomosowon
 Created:    11/01/2013
 Updated:    18/06/2016
 Copyright:  (c) seunomosowon 2016
-Licence:    GPL
+Licence:    Creative Commons BY 3.0
 -------------------------------------------------------------------------------
 """
 
@@ -89,7 +89,7 @@ class WebPing(Script):
         """
         This disables a modular input given the input name.
         :param input_name: Name of input that needs to be disabled.
-        :type basestring
+        :type input_name: basestring
         :return: Returns the disabled input
         :rtype: Entity
         """
@@ -112,13 +112,13 @@ class WebPing(Script):
             host_field = input_item['host_field']
             web_timeout = input_item['web_timeout']
             num_of_workers = input_item['workers']
-            if num_of_workers is None :
+            if num_of_workers == None :
                 num_of_workers = NUM_OF_WORKER_PROCESSES
             else:
                 num_of_workers = int(input_item['workers'])
 
             """Default webtimeout is 5 if not specified """
-            if web_timeout is None:
+            if web_timeout == None:
                 web_timeout = WEBTIMEOUT
             else:
                 try:

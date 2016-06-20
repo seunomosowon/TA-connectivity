@@ -1,10 +1,18 @@
+"""
+This includes functions to be used for web connectivity tests to a given URL.
+Functions here support the 'webping://' modular input
+"""
+
 import re
-#import traceback
 from string import Template
 from time import strftime
 import urllib2
 urlparse=urllib2.urlparse.urlparse
 from httplib import HTTPException
+""" 
+Still need to capture traceback and log to debug?
+import traceback 
+"""
 
 logmessage = Template('$timenow,action=$action,status=$status_code,src=splunk,dst=$dsthost,url=\"$dsturl\",description=$description')
 
@@ -14,6 +22,7 @@ def webtest(url,webtimeout):
     :param url: Application URL to be tested.
     :type basestring
     :param webtimeout: application web timeout to be used for the test.
+    :type webtimeout: int
     :return: Raises an exception or returns a status message about the connection tested
     :rtype: basestring
     """

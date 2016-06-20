@@ -1,3 +1,7 @@
+"""
+This includes functions to be used for ICMP echo (ping) tests to a host and destination.
+Functions here support the 'ping://' modular input
+"""
 
 import re
 import platform

@@ -1,3 +1,8 @@
+"""
+This includes functions to be used for tcp connectivity tests to a host and destination port.
+Functions here support the connect:// modular input
+"""
+
 import errno
 import socket
 from string import Template

@@ -6,10 +6,9 @@ Author:     seunomosowon
 Created:    11/01/2013
 Updated:    18/06/2016
 Copyright:  (c) seunomosowon 2016
-Licence:    GPL
+Licence:    Creative Commons BY 3.0
 -------------------------------------------------------------------------------
 """
-
 
 # module imports
 import os
@@ -53,8 +52,8 @@ class Connect(Script):
             name="port_field",
             description="Define field name to use as destination port number for the connectivity test",
             data_type=Argument.data_type_string,
-            required_on_edit=True,
-            required_on_create=True
+            required_on_edit=False,
+            required_on_create=False
         )
         scheme.add_argument(port_field)
         workers = Argument(
@@ -84,7 +83,7 @@ class Connect(Script):
         csv_headers.update(next(csvin, []))
         if host_field not in csv_headers:
             raise ConnectivityExceptionFieldNotFound(host_field)
-        if port_field is not None and port_field not in csv_headers:
+        if port_field != None and port_field not in csv_headers:
             raise ConnectivityExceptionFieldNotFound(port_field)
 
     def disable_input(self, input_name):
@@ -112,14 +111,14 @@ class Connect(Script):
             host_field = input_item['host_field']
             port_field = input_item['port_field']
             num_of_workers = int(input_item['workers'])
-            if num_of_workers < 0 or num_of_workers is None:
+            if num_of_workers < 0 or num_of_workers == None:
                 num_of_workers = NUM_OF_WORKER_PROCESSES
 
             with open(lookup_path) as hosts:
                 reader = csv.DictReader(hosts)
                 if host_field in reader.fieldnames:
                     pool = Pool(processes=num_of_workers)
-                    if port_field is not None and port_field in reader.fieldnames:
+                    if port_field != None and port_field in reader.fieldnames:
                         results = [pool.apply_async(connect_test,[eachline[host_field].strip('\"\r\n'),eachline[port_field].strip('\"\r\n')]) for eachline in reader]
                     else:
                         results = [pool.apply_async(connect_test, eachline[host_field].strip('\"\r\n').split(':')) for eachline in reader]

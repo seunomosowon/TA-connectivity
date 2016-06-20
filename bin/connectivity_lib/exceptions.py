@@ -1,3 +1,6 @@
+"""
+This includes all exceptions defined for technology addon.
+"""
 
 class ConnectivityException(Exception):
     """
