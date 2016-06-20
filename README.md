@@ -9,6 +9,8 @@ Available at:
 
 [Github](https://github.com/seunomosowon/TA-connectivity)
 
+**Note:** This is not backward compatibile with releases before v0.4.
+
 This app adds 3 modular inputs to any Splunk installation:
 1. ping - Tests connectivity using ICMP to multiple systems
 2. webping - tests connectivity to mulyiple web application given the application URLs
