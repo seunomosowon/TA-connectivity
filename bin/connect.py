@@ -28,7 +28,6 @@ class Connect(Script):
 
     def get_scheme(self):
         """This overrides the super method from the parent class"""
-
         scheme = Scheme("Connect")
         scheme.description = "Test availability of service on a specific port"
         scheme.use_external_validation = True
@@ -73,18 +72,18 @@ class Connect(Script):
         Check if host_field defined matches a header field in the csv.
         """
         csv_headers = set()
-        lookup_file = validation_definition.metadata["name"]
-        host_field = validation_definition.parameters["host_field"]
-        port_field = validation_definition.parameters["port_field"]
-
+        lookup_file = validation_definition.metadata['name']
+        host_field = validation_definition.parameters['host_field']
         if not os.path.isfile(lookup_file):
             raise ConnectivityExceptionFileNotFound(lookup_file)
         csvin = csv.reader(lookup_file)
         csv_headers.update(next(csvin, []))
         if host_field not in csv_headers:
             raise ConnectivityExceptionFieldNotFound(host_field)
-        if port_field != None and port_field not in csv_headers:
-            raise ConnectivityExceptionFieldNotFound(port_field)
+        if 'port_field' in validation_definition.parameters.keys():
+            port_field = validation_definition.parameters['port_field']
+            if port_field != None and port_field != '' and port_field not in csv_headers:
+                raise ConnectivityExceptionFieldNotFound(port_field)
 
     def disable_input(self, input_name):
         """
@@ -109,7 +108,11 @@ class Connect(Script):
         for input_name, input_item in inputs.inputs.iteritems():
             lookup_path = input_name.split('://')[1]
             host_field = input_item['host_field']
-            port_field = input_item['port_field']
+            if 'port_field' in input_item.keys():
+                port_field = input_item['port_field']
+            else:
+                port_field=None
+                ew.log(EventWriter.DEBUG, "port_field not found in configuration. host_field should have socket included")
             num_of_workers = int(input_item['workers'])
             if num_of_workers < 0 or num_of_workers == None:
                 num_of_workers = NUM_OF_WORKER_PROCESSES
@@ -121,18 +124,13 @@ class Connect(Script):
                     if port_field != None and port_field in reader.fieldnames:
                         results = [pool.apply_async(connect_test,[eachline[host_field].strip('\"\r\n'),eachline[port_field].strip('\"\r\n')]) for eachline in reader]
                     else:
+                        """Do connect_test(eachline[host_field]) asynchronously num_of_workers times"""
                         results = [pool.apply_async(connect_test, eachline[host_field].strip('\"\r\n').split(':')) for eachline in reader]
-
-                    """
-                    Do connect_test(eachline[host_field]) asynchronously num_of_workers times
-                    """
                     for x in results:
                         event = Event()
                         event.stanza = input_name
                         event.data = x.get()
                         ew.write_event(event)
-                        # ew.close() - adds double </stream> which is undesired
-
                 else:
                     self.disable_input(lookup_path)
                     ew.log(EventWriter.ERROR, "Disabling input because host_field not found in header")
