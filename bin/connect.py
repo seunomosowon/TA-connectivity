@@ -112,8 +112,8 @@ class Connect(Script):
                 port_field = input_item['port_field']
             else:
                 port_field = None
-                ew.log(EventWriter.DEBUG,
-                       "port_field not found in configuration. host_field should have socket included")
+                ew.log(EventWriter.WARN,
+                       "port_field not found in configuration. host_field must include ports in the format hostname:port")
             num_of_workers = int(input_item['workers'])
             if num_of_workers < 0 or num_of_workers is None:
                 num_of_workers = NUM_OF_WORKER_PROCESSES
