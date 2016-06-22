@@ -20,11 +20,10 @@ from connectivity_lib.pinger import *
 from connectivity_lib.constants import *
 from multiprocessing import Pool
 
+
 class Ping(Script):
-    """This inherits the class Script from the splunklib.modularinput script
-    They must override the get_scheme and stream_events functions, and,
-    if the scheme returned by get_scheme has Scheme.use_external_validation
-    set to True, the validate_input function.
+    """
+    This class contains all methods required for the modular input.
     """
 
     def get_scheme(self):
@@ -78,7 +77,8 @@ class Ping(Script):
         """
         This disables a modular input given the input name.
         :param input_name: Name of input that needs to be disabled.
-        :type basestring
+            This must be the input name just after the scheme - 'scheme://input_name_without_scheme'
+        :type input_name: basestring
         :return: Returns the disabled input
         :rtype: Entity
         """
@@ -99,14 +99,14 @@ class Ping(Script):
             lookup_path = input_name.split('://')[1]
             host_field = input_item['host_field']
             num_of_workers = int(input_item['workers'])
-            if num_of_workers < 0 or num_of_workers == None :
+            if num_of_workers < 0 or num_of_workers is None:
                 num_of_workers = NUM_OF_WORKER_PROCESSES
             with open(lookup_path) as hosts:
                 reader = csv.DictReader(hosts)
                 if host_field in reader.fieldnames:
                     pool = Pool(processes=num_of_workers)
-                    results = [pool.apply_async(pingtest, [eachline[host_field].strip('\"\r\n')]) for eachline in
-                           reader]
+                    results = [pool.apply_async(pingtest, [eachline[host_field].strip('\"\r\n')])
+                               for eachline in reader]
                     """
                     Do pingtest(eachline[host_field]) asynchronously num_of_workers times
                     """

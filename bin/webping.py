@@ -1,7 +1,7 @@
 """
 -------------------------------------------------------------------------------
 Name:       webping
-Purpose:    Test web applicaition availability
+Purpose:    Test web application availability
 Author:     seunomosowon
 Created:    11/01/2013
 Updated:    18/06/2016
@@ -22,10 +22,8 @@ from splunklib.modularinput import *
 
 
 class WebPing(Script):
-    """This inherits the class Script from the splunklib.modularinput script
-    They must override the get_scheme and stream_events functions, and,
-    if the scheme returned by get_scheme has Scheme.use_external_validation
-    set to True, the validate_input function.
+    """
+    This class contains all methods required for the modular input.
     """
     def get_scheme(self):
         """This overrides the super method from the parent class"""
@@ -112,25 +110,25 @@ class WebPing(Script):
             host_field = input_item['host_field']
             web_timeout = input_item['web_timeout']
             num_of_workers = input_item['workers']
-            if num_of_workers == None :
+            if num_of_workers is None:
                 num_of_workers = NUM_OF_WORKER_PROCESSES
             else:
                 num_of_workers = int(input_item['workers'])
 
             """Default webtimeout is 5 if not specified """
-            if web_timeout == None:
+            if web_timeout is None:
                 web_timeout = WEBTIMEOUT
             else:
                 try:
                     web_timeout = int(web_timeout)
                 except ValueError:
-                    raise ConnectivityExceptionParameterError
+                    raise ConnectivityParameterError('web_timeout')
             with open(lookup_file) as hosts:
                 reader = csv.DictReader(hosts)
                 if host_field in reader.fieldnames:
                     pool = Pool(processes=num_of_workers)
-                    results = [pool.apply_async(webtest, [eachline[host_field].strip('\"\r\n'), web_timeout]) for eachline in
-                           reader]
+                    results = [pool.apply_async(webtest, [eachline[host_field].strip('\"\r\n'), web_timeout])
+                               for eachline in reader]
                     """
                     Do webtest(eachline[host_field],timeout) asynchronously num_of_workers times
                     """
@@ -141,7 +139,7 @@ class WebPing(Script):
                         ew.write_event(event)
                         # ew.close() - adds double </stream> which is undesired
                 else:
-                    self.disable_input(lookup_path)
+                    self.disable_input(lookup_file)
                     ew.log(EventWriter.ERROR, "Disabling input because host_field not found in header")
                     raise ConnectivityExceptionFieldNotFound(host_field)
 

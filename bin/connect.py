@@ -1,7 +1,7 @@
 """
 -------------------------------------------------------------------------------
 Name:       connect.py
-Purpose:    Test applicaition availability at a given port
+Purpose:    Test application availability at a given port
 Author:     seunomosowon
 Created:    11/01/2013
 Updated:    18/06/2016
@@ -19,11 +19,10 @@ from connectivity_lib.connect_test import *
 from connectivity_lib.constants import *
 from multiprocessing import Pool
 
+
 class Connect(Script):
-    """This inherits the class Script from the splunklib.modularinput script
-    They must override the get_scheme and stream_events functions, and,
-    if the scheme returned by get_scheme has Scheme.use_external_validation
-    set to True, the validate_input function.
+    """
+    This class contains all methods required for the modular input
     """
 
     def get_scheme(self):
@@ -82,14 +81,15 @@ class Connect(Script):
             raise ConnectivityExceptionFieldNotFound(host_field)
         if 'port_field' in validation_definition.parameters.keys():
             port_field = validation_definition.parameters['port_field']
-            if port_field != None and port_field != '' and port_field not in csv_headers:
+            if port_field is not None and port_field != '' and port_field not in csv_headers:
                 raise ConnectivityExceptionFieldNotFound(port_field)
 
     def disable_input(self, input_name):
         """
         This disables a modular input given the input name.
         :param input_name: Name of input that needs to be disabled.
-        :type basestring
+            This must be the input name just after the scheme - 'scheme://input_name_without_scheme'
+        :type input_name: basestring
         :return: Returns the disabled input
         :rtype: Entity
         """
@@ -111,21 +111,25 @@ class Connect(Script):
             if 'port_field' in input_item.keys():
                 port_field = input_item['port_field']
             else:
-                port_field=None
-                ew.log(EventWriter.DEBUG, "port_field not found in configuration. host_field should have socket included")
+                port_field = None
+                ew.log(EventWriter.DEBUG,
+                       "port_field not found in configuration. host_field should have socket included")
             num_of_workers = int(input_item['workers'])
-            if num_of_workers < 0 or num_of_workers == None:
+            if num_of_workers < 0 or num_of_workers is None:
                 num_of_workers = NUM_OF_WORKER_PROCESSES
 
             with open(lookup_path) as hosts:
                 reader = csv.DictReader(hosts)
                 if host_field in reader.fieldnames:
                     pool = Pool(processes=num_of_workers)
-                    if port_field != None and port_field in reader.fieldnames:
-                        results = [pool.apply_async(connect_test,[eachline[host_field].strip('\"\r\n'),eachline[port_field].strip('\"\r\n')]) for eachline in reader]
+                    if port_field is not None and port_field in reader.fieldnames:
+                        results = [pool.apply_async(
+                            connect_test, [eachline[host_field].strip('\"\r\n'),
+                                           eachline[port_field].strip('\"\r\n')]) for eachline in reader]
                     else:
                         """Do connect_test(eachline[host_field]) asynchronously num_of_workers times"""
-                        results = [pool.apply_async(connect_test, eachline[host_field].strip('\"\r\n').split(':')) for eachline in reader]
+                        results = [pool.apply_async(connect_test, eachline[host_field].strip('\"\r\n').split(':'))
+                                   for eachline in reader]
                     for x in results:
                         event = Event()
                         event.stanza = input_name
