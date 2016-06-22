@@ -105,34 +105,28 @@ The modular inputs can be tested with the following commands:
 ```
 
 ### Output of Test1:
-```xml
-    <stream>
-        <event stanza="ping:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.txt" unbroken="1">
-            <data>
-                06/19/2016 04:03:54 BST ,action=ping failed,status=998,src=splunk,dst_hostname=www.google.com,dst_ip=216.58.210.36,description=,average_rtt=101.5,packet_loss=0%
-            </data>
-            <done />
-        </event>
-        <event stanza="ping:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.txt" unbroken="1">
-            <data>
-                06/19/2016 04:03:54 BST ,action=ping failed,status=998,src=splunk,dst_hostname=www.yahoo.com,dst_ip=46.228.47.115,description=,average_rtt=105.5,packet_loss=0%
-            </data>
-            <done />
-        </event>
-        <event stanza="ping:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.txt" unbroken="1">
-            <data>
-                06/19/2016 04:03:54 BST ,action=ping succeeded,status=200,src=splunk,dst_hostname=4.2.2.2,dst_ip=4.2.2.2,description="icmp_seq=1 ttl=58;icmp_seq=2 ttl=58",average_rtt=100.5,packet_loss=0%
-            </data>
-            <done />
-        </event>
-        <event stanza="ping:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.txt" unbroken="1">
-            <data>
-                06/19/2016 04:03:54 BST ,action=ping succeeded,status=200,src=splunk,dst_hostname=8.8.8.8,dst_ip=8.8.8.8,description="icmp_seq=1 ttl=55;icmp_seq=2 ttl=55",average_rtt=102.5,packet_loss=0%
-            </data>
-            <done />
-        </event>
-    </stream>
-```
+<code>
+<stream>
+    <event stanza="ping:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.txt" unbroken="1">
+        <data>
+        06/22/2016 23:05:56 BST ,action=ping succeeded,status=200,src=splunk,dst_hostname=www.google.com,dst_ip=216.58.210.36,description="icmp_seq=1 ttl=55;icmp_seq=2 ttl=55",average_rtt=103.5,packet_loss=0%
+        </data>
+        <done />
+    </event>
+    <event stanza="ping:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.txt" unbroken="1">
+        <data>
+            06/22/2016 23:05:56 BST ,action=ping succeeded,status=200,src=splunk,dst_hostname=www.yahoo.com,dst_ip=46.228.47.115,description="icmp_seq=1 ttl=55;icmp_seq=2 ttl=55",average_rtt=106.5,packet_loss=0%</data><done /></event><event stanza="ping:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.txt" unbroken="1"><data>06/22/2016 23:05:56 BST ,action=ping failed,status=998,src=splunk,dst_hostname=4.2.2.2,dst_ip=4.2.2.2,description=,average_rtt=100.5,packet_loss=0%
+        </data>
+        <done />
+    </event>
+    <event stanza="ping:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.txt" unbroken="1">
+        <data>
+            06/22/2016 23:05:56 BST ,action=ping failed,status=998,src=splunk,dst_hostname=8.8.8.8,dst_ip=8.8.8.8,description=,average_rtt=102.0,packet_loss=0%
+        </data>
+        <done />
+    </event>
+</stream>
+</code>
 
 ## Test 2: WebPing modular input
 ```

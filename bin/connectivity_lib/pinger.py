@@ -14,12 +14,8 @@ from time import strftime
 
 eventmsg = Template('$timenow ,action=$action,status=$status_code,src=splunk,dst_hostname=$dsthost,dst_ip=$dstip,description=$description')
 regex_ip = r'(?P<ip_address>(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))'
-#regex_hostname = r'(?P<dsthost>(?:[a-zA-Z0-9]+[a-zA-Z0-9\-]*?[a-zA-Z0-9]*\.)*[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])'
-#regex_hostname = r'(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])|
-# (([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])'
-
-regex_hostname = r'(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])|(([a-zA-Z0-9]' \
-                 r'|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])'
+regex_hostname = r"((?:(?:[a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*(?:[A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9]))"
+#regex_ip = r"(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])"
 
 regex_ttl = r'.*TTL=(?P<ttl>\d+)'
 
@@ -107,7 +103,8 @@ def pingtest(dstaddr):
                 status = 999
             else:
                 pattern_ping_request = r'^PING[\s](?:' + regex_hostname + r')*\s\(' + regex_ip + r'\)'
-                pattern_ping_reply = r'^\d+\sbytes\sfrom\s' + regex_ip + r':\s(?P<description>.*ttl=(?P<ttl>\d+))$'
+                pattern_ping_reply = r'^\d+\sbytes\sfrom\s%s\s\(%s\):\s(?P<description>.*ttl=(?:\d+))$' % (
+                regex_hostname, regex_ip)
                 pattern_statistics = r'^(?P<packet_no>\d+)\spackets\stransmitted,\s(?:\d+)\sreceived,\s(?P<packet_loss>\d+%)\spacket\sloss,\stime\s(?P<rtt>\d+)ms'
                 request_regex = re.search(pattern_ping_request, output, re.M)
                 if request_regex:
@@ -123,7 +120,7 @@ def pingtest(dstaddr):
                             status = 998
                         rex_description = re.findall(pattern_ping_reply, output,re.M)
                         # matches "reply from w.x.y.z: destination host unreachable"
-                        description = '\"' + ';'.join([y for x, y, z in rex_description]) + '\"'
+                        description = '\"' + ';'.join([z for x, y, z in rex_description]) + '\"'
                         # description = '\"' + ';'.join(rex_description) + '\"'
                     else:
                         action = 'ping failed'
@@ -159,3 +156,4 @@ def pingtest(dstaddr):
         print repr(traceback.format_tb(exc_traceback))
         print "*** tb_lineno:", exc_traceback.tb_lineno
 """
+
