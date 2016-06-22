@@ -19,13 +19,12 @@ This app adds 3 modular inputs to any Splunk installation:
 This also allows the specification of of how many threads should be used to handle a the list to be tested against.
 
 *Sample CSV1:*
-```CSV
+```csv
 hostname,port,url
 www.google.com,80,https://encrypted.google.com
 www.yahoo.com,80,http://www.yahoo.com
 4.2.2.2,53,http://www.twitter.com
 8.8.8.8,53,http://www.linkedin.com
-
 ```
 
 *Sample CSV2 for Example 4 below:*
@@ -105,7 +104,7 @@ The modular inputs can be tested with the following commands:
 ```
 
 ### Output of Test1:
-```xml
+<code>
 <stream>
     <event stanza="ping:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.txt" unbroken="1">
         <data>
@@ -126,7 +125,7 @@ The modular inputs can be tested with the following commands:
         <done />
     </event>
 </stream>
-```
+</code>
 
 ## Test 2: WebPing modular input
 ```
@@ -134,30 +133,30 @@ The modular inputs can be tested with the following commands:
 ```
 
 ### Output of command:
-```xml
-    <stream>
-        <event stanza="webping:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.txt" unbroken="1">
-            <data>
-                06/19/2016 03:54:35 BST,action=successful,status=200,src=splunk,dst=encrypted.google.com,url="https://encrypted.google.com",description=online</data>
-            <done />
-        </event>
-        <event stanza="webping:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.txt" unbroken="1">
-            <data>
-                06/19/2016 03:54:35 BST,action=successful,status=200,src=splunk,dst=www.yahoo.com,url="http://www.yahoo.com",description=online</data>
-            <done />
-        </event>
-        <event stanza="webping:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.txt" unbroken="1">
-            <data>
-                06/19/2016 03:54:35 BST,action=successful,status=200,src=splunk,dst=www.twitter.com,url="http://www.twitter.com",description=online</data>
-            <done />
-        </event>
-        <event stanza="webping:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.txt" unbroken="1">
-            <data>
-                06/19/2016 03:54:35 BST,action=successful,status=200,src=splunk,dst=www.linkedin.com,url="http://www.linkedin.com",description=online</data>
-            <done />
-        </event>
-    </stream>
-```
+<code>
+<stream>
+    <event stanza="webping:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.txt" unbroken="1">
+        <data>
+            06/19/2016 03:54:35 BST,action=successful,status=200,src=splunk,dst=encrypted.google.com,url="https://encrypted.google.com",description=online</data>
+        <done />
+    </event>
+    <event stanza="webping:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.txt" unbroken="1">
+        <data>
+            06/19/2016 03:54:35 BST,action=successful,status=200,src=splunk,dst=www.yahoo.com,url="http://www.yahoo.com",description=online</data>
+        <done />
+    </event>
+    <event stanza="webping:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.txt" unbroken="1">
+        <data>
+            06/19/2016 03:54:35 BST,action=successful,status=200,src=splunk,dst=www.twitter.com,url="http://www.twitter.com",description=online</data>
+        <done />
+    </event>
+    <event stanza="webping:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.txt" unbroken="1">
+        <data>
+            06/19/2016 03:54:35 BST,action=successful,status=200,src=splunk,dst=www.linkedin.com,url="http://www.linkedin.com",description=online</data>
+        <done />
+    </event>
+</stream>
+</code>
 
 ## Test 3: Connect modular input
 ```
@@ -165,31 +164,31 @@ The modular inputs can be tested with the following commands:
 ```
 
 ### Output of command:
-```xml
-    <stream>
-        <event stanza="connect:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.txt" unbroken="1">
-            <data>
-                06/19/2016 04:44:49 BST ,action=connection succeeded,status=200,src=splunk,dst_hostname=www.google.com,dst_ip=216.58.210.36,description=Connection successful to host=www.google.com on port=80
-            </data>
-            <done />
-        </event>
-        <event stanza="connect:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.txt" unbroken="1">
-            <data>
-                06/19/2016 04:44:49 BST ,action=connection succeeded,status=200,src=splunk,dst_hostname=www.yahoo.com,dst_ip=46.228.47.115,description=Connection successful to host=www.yahoo.com on port=80
-            </data>
-            <done />
-        </event>
-        <event stanza="connect:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.txt" unbroken="1">
-            <data>
-                06/19/2016 04:44:49 BST ,action=connection succeeded,status=200,src=splunk,dst_hostname=4.2.2.2,dst_ip=4.2.2.2,description=Connection successful to host=4.2.2.2 on port=53
-            </data>
-            <done />
-        </event>
-        <event stanza="connect:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.txt" unbroken="1">
-            <data>
-                06/19/2016 04:44:49 BST ,action=connection succeeded,status=200,src=splunk,dst_hostname=8.8.8.8,dst_ip=8.8.8.8,description=Connection successful to host=8.8.8.8 on port=53
-            </data>
-            <done />
-        </event>
-    </stream>
-```
+<code>
+<stream>
+    <event stanza="connect:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.txt" unbroken="1">
+        <data>
+            06/19/2016 04:44:49 BST ,action=connection succeeded,status=200,src=splunk,dst_hostname=www.google.com,dst_ip=216.58.210.36,description=Connection successful to host=www.google.com on port=80
+        </data>
+        <done />
+    </event>
+    <event stanza="connect:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.txt" unbroken="1">
+        <data>
+            06/19/2016 04:44:49 BST ,action=connection succeeded,status=200,src=splunk,dst_hostname=www.yahoo.com,dst_ip=46.228.47.115,description=Connection successful to host=www.yahoo.com on port=80
+        </data>
+        <done />
+    </event>
+    <event stanza="connect:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.txt" unbroken="1">
+        <data>
+            06/19/2016 04:44:49 BST ,action=connection succeeded,status=200,src=splunk,dst_hostname=4.2.2.2,dst_ip=4.2.2.2,description=Connection successful to host=4.2.2.2 on port=53
+        </data>
+        <done />
+    </event>
+    <event stanza="connect:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.txt" unbroken="1">
+        <data>
+           06/19/2016 04:44:49 BST ,action=connection succeeded,status=200,src=splunk,dst_hostname=8.8.8.8,dst_ip=8.8.8.8,description=Connection successful to host=8.8.8.8 on port=53
+        </data>
+        <done />
+    </event>
+</stream>
+</code>
