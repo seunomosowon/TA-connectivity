@@ -108,19 +108,25 @@ The modular inputs can be tested with the following commands:
 <stream>
     <event stanza="ping:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.txt" unbroken="1">
         <data>
-            06/22/2016 23:05:56 BST ,action=ping succeeded,status=200,src=splunk,dst_hostname=www.google.com,dst_ip=216.58.210.36,description="icmp_seq=1 ttl=55;icmp_seq=2 ttl=55",average_rtt=103.5,packet_loss=0%
+            06/23/2016 12:38:44 BST ,action=ping succeeded,status=200,src=splunk,dst_hostname=www.google.com,dst_ip=216.58.198.164,description="icmp_seq=1 ttl=55;icmp_seq=2 ttl=55",average_rtt=101.5,packet_loss=0%
         </data>
         <done />
     </event>
     <event stanza="ping:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.txt" unbroken="1">
         <data>
-            06/22/2016 23:05:56 BST ,action=ping succeeded,status=200,src=splunk,dst_hostname=www.yahoo.com,dst_ip=46.228.47.115,description="icmp_seq=1 ttl=55;icmp_seq=2 ttl=55",average_rtt=106.5,packet_loss=0%</data><done /></event><event stanza="ping:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.txt" unbroken="1"><data>06/22/2016 23:05:56 BST ,action=ping failed,status=998,src=splunk,dst_hostname=4.2.2.2,dst_ip=4.2.2.2,description=,average_rtt=100.5,packet_loss=0%
+            06/23/2016 12:38:44 BST ,action=ping succeeded,status=200,src=splunk,dst_hostname=www.yahoo.com,dst_ip=46.228.47.114,description="icmp_seq=1 ttl=54;icmp_seq=2 ttl=54",average_rtt=105.5,packet_loss=0%
         </data>
         <done />
     </event>
     <event stanza="ping:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.txt" unbroken="1">
         <data>
-            06/22/2016 23:05:56 BST ,action=ping failed,status=998,src=splunk,dst_hostname=8.8.8.8,dst_ip=8.8.8.8,description=,average_rtt=102.0,packet_loss=0%
+            06/23/2016 12:38:44 BST ,action=ping succeeded,status=200,src=splunk,dst_hostname=4.2.2.2,dst_ip=4.2.2.2,description="icmp_seq=1 ttl=58;icmp_seq=2 ttl=58",average_rtt=101.5,packet_loss=0%
+        </data>
+        <done />
+    </event>
+    <event stanza="ping:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.txt" unbroken="1">
+        <data>
+            06/23/2016 12:38:44 BST ,action=ping succeeded,status=200,src=splunk,dst_hostname=8.8.8.8,dst_ip=8.8.8.8,description="icmp_seq=1 ttl=55;icmp_seq=2 ttl=55",average_rtt=101.0,packet_loss=0%
         </data>
         <done />
     </event>
