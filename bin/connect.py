@@ -70,18 +70,17 @@ class Connect(Script):
         Check if lookup defined in inputs exists
         Check if host_field defined matches a header field in the csv.
         """
-        csv_headers = set()
         lookup_file = validation_definition.metadata['name']
         host_field = validation_definition.parameters['host_field']
         if not os.path.isfile(lookup_file):
             raise ConnectivityExceptionFileNotFound(lookup_file)
-        csvin = csv.reader(lookup_file)
-        csv_headers.update(next(csvin, []))
-        if host_field not in csv_headers:
+        csvin = csv.reader(open(lookup_file,'r'))
+        headers = csvin.next()
+        if host_field not in headers:
             raise ConnectivityExceptionFieldNotFound(host_field)
         if 'port_field' in validation_definition.parameters.keys():
             port_field = validation_definition.parameters['port_field']
-            if port_field is not None and port_field != '' and port_field not in csv_headers:
+            if port_field is not None and port_field != '' and port_field not in headers:
                 raise ConnectivityExceptionFieldNotFound(port_field)
 
     def disable_input(self, input_name):

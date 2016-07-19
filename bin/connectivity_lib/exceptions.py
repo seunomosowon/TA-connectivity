@@ -23,7 +23,7 @@ class ConnectivityExceptionFieldNotFound(ConnectivityException):
     """
     def __init__(self,message):
         self.field = message
-        ConnectivityException.__init__(self, 'host_field, %s, does not match values in header' % (message))
+        ConnectivityException.__init__(self, 'Field, %s, does not match values in header' % (message))
 
 
 class ConnectivityPortValueError(ConnectivityException):

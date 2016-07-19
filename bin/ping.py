@@ -69,7 +69,8 @@ class Ping(Script):
         if not os.path.isfile(lookup_file):
             raise ConnectivityExceptionFileNotFound(lookup_file)
         csvin = csv.reader(open(lookup_file,'r'))
-        if host_field not in csvin.next():
+        headers = csvin.next()
+        if host_field not in headers:
             raise ConnectivityExceptionFieldNotFound(host_field)
 
     def disable_input(self, input_name):
