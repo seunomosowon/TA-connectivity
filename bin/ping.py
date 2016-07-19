@@ -68,9 +68,8 @@ class Ping(Script):
         host_field = validation_definition.parameters["host_field"]
         if not os.path.isfile(lookup_file):
             raise ConnectivityExceptionFileNotFound(lookup_file)
-        csvin = csv.reader(lookup_file)
-        csv_headers.update(next(csvin, []))
-        if host_field not in csv_headers:
+        csvin = csv.reader(open(lookup_file,'r'))
+        if host_field not in csvin.next():
             raise ConnectivityExceptionFieldNotFound(host_field)
 
     def disable_input(self, input_name):
