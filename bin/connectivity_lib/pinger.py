@@ -26,6 +26,7 @@ def pingtest(dstaddr):
     action=''
     description=''
     dst_ip=''
+    status=''
     if platform.system() == 'Windows':
         p = popen(['ping', '-n', '2', '-l', '1', str(dstaddr)], stdout=PIPE, stderr=PIPE)
         if p:
@@ -74,6 +75,7 @@ def pingtest(dstaddr):
         else:
             # error running ping command, ping command returned False return code
             status = 999
+            output='' # will try get error code here p.returncode
             pattern_ping_request = r'^Pinging[\s]%s\s\[%s\]' % (regex_hostname, regex_ip)
             request_regex = re.search(pattern_ping_request, output, re.M)
             if request_regex:
