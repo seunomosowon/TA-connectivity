@@ -63,7 +63,7 @@ def ping_windows(dst):
     """
     result = PingResult()
     pattern_ping_request = r'^Pinging[\s](?:%s\s)*\[?%s\]?' % (regex_hostname, regex_ip)
-    pattern_ping_reply = r'^Reply\sfrom\s%s:\s(?P<description>[^\r\n]+)$' % regex_ip
+    pattern_ping_reply = r'^Reply\sfrom\s(?P<ip_address>\d+.\d+.\d+.\d+):\s(?P<description>[^\r\n]+)$'
     pattern_rtt = r'Minimum\s=\s(?P<rtt_min>\d+ms),\sMaximum\s=\s(?P<rtt_max>\d+ms),\sAverage\s=\s(?P<rtt_avg>\d+ms)'
     pattern_packet_details = (r'Sent\s=\s(?P<packets_sent>\d+)\s,\sReceived\s=\s(?P<packets_received>\d+)'
                               r'\s,\sLost\s=\s(?P<packets_lost>\d+)\s\((?P<packet_loss>\d+%).*$')
@@ -93,7 +93,7 @@ def ping_windows(dst):
                         result.status = 998
                 else:
                     rex_description = re.findall(pattern_error_description, output)
-                    result.description += '\"' + ';'.join([d for d in rex_description[0]]) + '\"'
+                    result.description += '\"' + ';'.join([d for d in rex_description]) + '\"'
                     # matches errors like "request timed out" OR "PING: transmit failed. General failure."
                     result.action = 'ping failed'
                     result.status = 997
