@@ -58,9 +58,9 @@ Available at:
 **Note:** This is not backward compatibile with releases before v0.4.
 
 This app adds 3 modular inputs to any Splunk installation:
-1. 
-2. 
-3. 
+1. ping://
+2. webping://
+3. connect://
 
 This also allows the specification of of how many threads should be used to handle a the provided list of hosts.
 
@@ -106,6 +106,8 @@ TA-connectivity v1.0 includes the following new features:
 - Improved documentation
 - Added configuration to allow automated tests of all modular inputs added by this TA via [Travis CI](http://travis-ci.org/)  
 - Removed interval from inputs.conf.spec to pass appinspection
+- Fixed exception handling for connect where connection is refused
+- Refactored code to reduce imports all over the place.
 
 ##### Known issues
 

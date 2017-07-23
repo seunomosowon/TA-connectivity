@@ -13,12 +13,9 @@ Licence:    Creative Commons BY 3.0
 import csv
 import os
 import sys
-from multiprocessing import Pool
-
-from connectivity_lib.constants import *
-from connectivity_lib.exceptions import *
-from connectivity_lib.webtest import *
 from splunklib.modularinput import *
+from connectivity_lib.webtest import *
+from multiprocessing import Pool
 
 
 class WebPing(Script):
@@ -75,7 +72,7 @@ class WebPing(Script):
         host_field = validation_definition.parameters["host_field"]
         if not os.path.isfile(lookup_file):
             raise ConnectivityExceptionFileNotFound(lookup_file)
-        csvin = csv.reader(open(lookup_file,'r'))
+        csvin = csv.reader(open(lookup_file, 'r'))
         headers = csvin.next()
         if host_field not in headers:
             raise ConnectivityExceptionFieldNotFound(host_field)
@@ -130,10 +127,10 @@ class WebPing(Script):
                     Do webtest(eachline[host_field],timeout) asynchronously num_of_workers times
                     """
                     for x in results:
-                        event = Event()
-                        event.stanza = input_name
-                        event.data = x.get()
-                        ew.write_event(event)
+                        logevent = Event()
+                        logevent.stanza = input_name
+                        logevent.data = x.get()
+                        ew.write_event(logevent)
                         # ew.close() - adds double </stream> which is undesired
                 else:
                     self.disable_input(lookup_file)

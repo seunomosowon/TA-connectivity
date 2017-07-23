@@ -41,6 +41,9 @@ install:
   - curl --fail -k -u admin:random_password -X POST
     https://localhost:8089/servicesNS/nobody/TA-connectivity/data/inputs/connect/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile.txt/enable |
     grep "\"disabled\">0" &> /dev/null
+  - curl --fail -k -u admin:random_password -X POST
+    https://localhost:8089/servicesNS/nobody/TA-connectivity/data/inputs/connect/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile2.txt/enable |
+    grep "\"disabled\">0" &> /dev/null
 
 script:
   - echo "Checking if TA was installed successfully and enabled"
@@ -61,7 +64,10 @@ script:
     splunk cmd splunkd print-modinput-config connect connect:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.txt |
     docker exec -i autobuild
     /opt/splunk/bin/splunk cmd python /opt/splunk/etc/apps/TA-connectivity/bin/connect.py
-
+  - docker exec autobuild entrypoint.sh
+    splunk cmd splunkd print-modinput-config connect connect:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile2.txt |
+    docker exec -i autobuild
+    /opt/splunk/bin/splunk cmd python /opt/splunk/etc/apps/TA-connectivity/bin/connect.py
 
 env:
   - "SPLUNK_VERSION=6.6.1"

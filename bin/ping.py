@@ -15,9 +15,7 @@ import os
 import csv
 import sys
 from splunklib.modularinput import *
-from connectivity_lib.exceptions import *
 from connectivity_lib.pinger import *
-from connectivity_lib.constants import *
 from multiprocessing import Pool
 
 
@@ -63,12 +61,11 @@ class Ping(Script):
         Check if lookup defined in inputs exists
         Check if host_field defined matches a header field in the csv.
         """
-        csv_headers = set()
         lookup_file = validation_definition.metadata["name"]
         host_field = validation_definition.parameters["host_field"]
         if not os.path.isfile(lookup_file):
             raise ConnectivityExceptionFileNotFound(lookup_file)
-        csvin = csv.reader(open(lookup_file,'r'))
+        csvin = csv.reader(open(lookup_file, 'r'))
         headers = csvin.next()
         if host_field not in headers:
             raise ConnectivityExceptionFieldNotFound(host_field)
@@ -111,10 +108,10 @@ class Ping(Script):
                     Do pingtest(eachline[host_field]) asynchronously num_of_workers times
                     """
                     for x in results:
-                        event = Event()
-                        event.stanza = input_name
-                        event.data = x.get()
-                        ew.write_event(event)
+                        logevent = Event()
+                        logevent.stanza = input_name
+                        logevent.data = x.get()
+                        ew.write_event(logevent)
                         # ew.close() - adds double </stream> which is undesired
                 else:
                     self.disable_input(lookup_path)

@@ -16,7 +16,6 @@ import csv
 import sys
 from splunklib.modularinput import *
 from connectivity_lib.connect_test import *
-from connectivity_lib.constants import *
 from multiprocessing import Pool
 
 
@@ -74,7 +73,7 @@ class Connect(Script):
         host_field = validation_definition.parameters['host_field']
         if not os.path.isfile(lookup_file):
             raise ConnectivityExceptionFileNotFound(lookup_file)
-        csvin = csv.reader(open(lookup_file,'r'))
+        csvin = csv.reader(open(lookup_file, 'r'))
         headers = csvin.next()
         if host_field not in headers:
             raise ConnectivityExceptionFieldNotFound(host_field)
@@ -112,7 +111,8 @@ class Connect(Script):
             else:
                 port_field = None
                 ew.log(EventWriter.WARN,
-                       "port_field not found in configuration. host_field must include ports in the format hostname:port")
+                       "port_field not found in configuration. host_field must include ports in the "
+                       "format hostname:port")
             num_of_workers = int(input_item['workers'])
             if num_of_workers < 0 or num_of_workers is None:
                 num_of_workers = NUM_OF_WORKER_PROCESSES
@@ -130,10 +130,10 @@ class Connect(Script):
                         results = [pool.apply_async(connect_test, eachline[host_field].strip('\"\r\n').split(':'))
                                    for eachline in reader]
                     for x in results:
-                        event = Event()
-                        event.stanza = input_name
-                        event.data = x.get()
-                        ew.write_event(event)
+                        logevent = Event()
+                        logevent.stanza = input_name
+                        logevent.data = x.get()
+                        ew.write_event(logevent)
                 else:
                     self.disable_input(lookup_path)
                     ew.log(EventWriter.ERROR, "Disabling input because host_field not found in header")

@@ -7,7 +7,8 @@ import errno
 import socket
 from string import Template
 from time import strftime
-from exceptions import *
+from .exceptions import *
+from .constants import *
 
 eventmessage = Template('$timenow ,action=$action,status=$status_code,src=splunk,dst_hostname=$dsthost,'
                         'dst_ip=$dstip,description=$description')
@@ -41,10 +42,10 @@ def connect_test(dstaddr, port):
         action = 'connection succeeded'
         description = "Connection successful to host=%s on port=%s" % (dstaddr, port)
         status = 200
-    except socket.gaierror,e:
+    except socket.gaierror:
         raise ConnectivityNameResolution(dst_ip)
     except socket.error, e:
-        if socket.error.errno == errno.ECONNREFUSED:
+        if e.errno == errno.ECONNREFUSED:
             description = "Connection actively refused by host=%s on port=%s" % (dstaddr, port)
             action = "connection failed"
             status = 999

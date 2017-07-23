@@ -7,7 +7,8 @@ import re
 import urllib2
 from time import strftime
 from string import Template
-from httplib import HTTPException
+from .exceptions import *
+from .constants import *
 urlparse = urllib2.urlparse.urlparse
 
 """ 
@@ -61,7 +62,7 @@ def webtest(url, webtimeout):
         action = 'URLERROR'
         description = 'URLError - ' + str(e.reason)
         status_code = 999
-    except HTTPException, e:
+    except HTTPException:
         action = 'PROGRAM_ERROR'
         description = 'HTTPException'
         status_code = 999

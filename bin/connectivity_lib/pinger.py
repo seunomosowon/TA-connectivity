@@ -10,6 +10,8 @@ from string import Template
 from subprocess import PIPE
 from subprocess import Popen
 from time import strftime
+from .exceptions import *
+from .constants import *
 
 
 class PingResult:
@@ -116,7 +118,7 @@ def ping_windows(dst):
         # May not get here
         result.action = 'Python Popen error'
         result.status = 999
-        result.description += 'Error running ping command via Popen. Make sure ping is accessible using the system PATH.'
+        result.description += 'Error running ping command via Popen.Make sure ping is accessible using the system PATH.'
         result.dst_ip = dst
     return result
 
