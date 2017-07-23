@@ -3,3 +3,5 @@ www.google.com:80
 www.yahoo.com:80
 4.2.2.2:53
 8.8.8.8:53
+localhost:8089
+127.0.0.1:8089

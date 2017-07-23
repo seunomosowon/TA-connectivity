@@ -4,3 +4,5 @@ www.yahoo.com,80,http://www.yahoo.com
 4.2.2.2,53,http://www.twitter.com
 8.8.8.8,53,http://www.linkedin.com
 0.0.0.0,443,https://encrypted.google.com
+localhost,8089,https://localhost:8089
+127.0.0.1,8089,https://127.0.0.1:8089
