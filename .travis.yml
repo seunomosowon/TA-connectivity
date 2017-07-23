@@ -46,9 +46,9 @@ script:
   - echo "Checking if TA was installed successfully and enabled"
   - curl --fail -k -u admin:random_password https://localhost:8089/services/apps/local/TA-connectivity | grep "\"disabled\">0" &>/dev/null
   - echo "Checking if modular input is not broken"
-  - curl --fail -k -u admin:random_password https://localhost:8089/services/data/modular-inputs/ping |grep "\"disabled\">0" &> /dev/null
-  - curl --fail -k -u admin:random_password https://localhost:8089/services/data/modular-inputs/webping |grep "\"disabled\">0" &> /dev/null
-  - curl --fail -k -u admin:random_password https://localhost:8089/services/data/modular-inputs/connect |grep "\"disabled\">0" &> /dev/null
+  - curl --fail -k -u admin:random_password https://localhost:8089/services/data/modular-inputs/ping &> /dev/null
+  - curl --fail -k -u admin:random_password https://localhost:8089/services/data/modular-inputs/webping &> /dev/null
+  - curl --fail -k -u admin:random_password https://localhost:8089/services/data/modular-inputs/connect &> /dev/null
   - docker exec autobuild entrypoint.sh
     splunk cmd splunkd print-modinput-config ping ping:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.txt |
     docker exec -i autobuild
