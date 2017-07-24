@@ -17,7 +17,7 @@ before_install:
   - sudo iptables -I INPUT -p tcp --dports $SPLKMGMT -j ACCEPT || true
   # Start Docker container
   - docker create --name autobuild_$SPLKMGMT --hostname autobuild -v /opt/splunk/etc/apps
-    -e "SPLUNK_START_ARGS=--accept-license" -p "8089:$SPLKMGMT"
+    -e "SPLUNK_START_ARGS=--accept-license" -p "$SPLKMGMT:8089"
     -e SPLUNK_CMD='edit user admin -password random_password -role admin -auth admin:changeme'
     splunk/splunk:$SPLUNK_VERSION
   - echo "Installing TA"
