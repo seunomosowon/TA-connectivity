@@ -342,7 +342,7 @@ interval = 600
 
 ##### Test availability via connect
 This tests the connection to a host on a specified port.
-If port_field is not specified, it expects the host_field to be in the format *hostname:port* or *IP:port*.
+If port\_field is not specified, it expects the host\_field to be in the format *hostname:port* or *IP:port*.
 
 *Example 3*
 ```

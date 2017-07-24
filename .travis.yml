@@ -34,16 +34,16 @@ before_install:
 install:
   - echo "Enable test inputs"
   - curl --fail -k -u admin:random_password -X POST
-    https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/ping/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile.txt/enable |
+    https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/ping/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile.csv/enable |
     grep "\"disabled\">0" &> /dev/null
   - curl --fail -k -u admin:random_password -X POST
-    https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/webping/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile.txt/enable |
+    https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/webping/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile.csv/enable |
     grep "\"disabled\">0" &> /dev/null
   - curl --fail -k -u admin:random_password -X POST
-    https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/connect/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile.txt/enable |
+    https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/connect/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile.csv/enable |
     grep "\"disabled\">0" &> /dev/null
   - curl --fail -k -u admin:random_password -X POST
-    https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/connect/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile2.txt/enable |
+    https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/connect/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile2.csv/enable |
     grep "\"disabled\">0" &> /dev/null
 
 script:
@@ -54,19 +54,19 @@ script:
   - curl --fail -k -u admin:random_password https://localhost:$SPLKMGMT/services/data/modular-inputs/webping &> /dev/null
   - curl --fail -k -u admin:random_password https://localhost:$SPLKMGMT/services/data/modular-inputs/connect &> /dev/null
   - docker exec autobuild_$SPLKMGMT entrypoint.sh
-    splunk cmd splunkd print-modinput-config ping ping:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.txt |
+    splunk cmd splunkd print-modinput-config ping ping:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.csv |
     docker exec -i autobuild_$SPLKMGMT
     /opt/splunk/bin/splunk cmd python /opt/splunk/etc/apps/TA-connectivity/bin/ping.py
   - docker exec autobuild_$SPLKMGMT entrypoint.sh
-    splunk cmd splunkd print-modinput-config webping webping:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.txt |
+    splunk cmd splunkd print-modinput-config webping webping:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.csv |
     docker exec -i autobuild_$SPLKMGMT
     /opt/splunk/bin/splunk cmd python /opt/splunk/etc/apps/TA-connectivity/bin/webping.py
   - docker exec autobuild_$SPLKMGMT entrypoint.sh
-    splunk cmd splunkd print-modinput-config connect connect:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.txt |
+    splunk cmd splunkd print-modinput-config connect connect:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.csv |
     docker exec -i autobuild_$SPLKMGMT
     /opt/splunk/bin/splunk cmd python /opt/splunk/etc/apps/TA-connectivity/bin/connect.py
   - docker exec autobuild_$SPLKMGMT entrypoint.sh
-    splunk cmd splunkd print-modinput-config connect connect:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile2.txt |
+    splunk cmd splunkd print-modinput-config connect connect:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile2.csv |
     docker exec -i autobuild_$SPLKMGMT
     /opt/splunk/bin/splunk cmd python /opt/splunk/etc/apps/TA-connectivity/bin/connect.py
 
