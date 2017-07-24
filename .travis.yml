@@ -32,7 +32,7 @@ before_install:
     done
 
 install:
-  - echo "Enable test inputs"
+  - echo "Enabling test inputs"
   - curl --fail -k -u admin:random_password -X POST
     https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/ping/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile.csv/enable |
     grep "\"disabled\">0" &> /dev/null
