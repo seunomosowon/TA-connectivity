@@ -15,7 +15,7 @@ before_install:
   - docker pull splunk/splunk
   # Add DOCKER to iptables, 1/10 times this is needed, force 0 exit status
   - sudo iptables -N DOCKER || true
-  - sudo iptables -I INPUT -p tcp --dports $SPLKMGMT -j ACCEPT || true
+  - sudo iptables -I INPUT -p tcp --dport $SPLKMGMT -j ACCEPT || true
   # Start Docker container
   - docker create --name autobuild_$SPLKMGMT --hostname autobuild -v /opt/splunk/etc/apps
     -e "SPLUNK_START_ARGS=--accept-license" -p "$SPLKMGMT:8089"
