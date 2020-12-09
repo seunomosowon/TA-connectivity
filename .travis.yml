@@ -18,22 +18,13 @@ before_install:
   - sudo iptables -I INPUT -p tcp --dport $SPLKMGMT -j ACCEPT || true
   # Start Docker container
   - docker create --name autobuild_$SPLKMGMT --hostname autobuild -v /opt/splunk/etc/apps
-    -e "SPLUNK_START_ARGS=--accept-license" -p "$SPLKMGMT:8089"
-    -e SPLUNK_CMD='edit user admin -password random_password -role admin -auth admin:changeme'
-    splunk/splunk:$SPLUNK_VERSION
-  - echo "`date -u` - Installing TA"
-  - docker cp $TRAVIS_BUILD_DIR autobuild_$SPLKMGMT:/opt/splunk/etc/apps/
+    -e "SPLUNK_PASSWORD=$RANDOM_PASSWORD" -e "SPLUNK_START_ARGS=--accept-license" -p "$SPLKMGMT:8089"
+    -e "SPLUNK_USER=splunk" splunk/splunk:$SPLUNK_VERSION
   - echo "`date -u` - Starting container"
   - docker start autobuild_$SPLKMGMT
-  - for i in `seq 0 5 100`;
-    do if curl --fail -k -u admin:random_password https://localhost:$SPLKMGMT/services/server/info &> /dev/null;
-    then break;
-    fi;
-    echo "`date -u` - Waited $i seconds for container to start" ; sleep 5;
-    if [ 100 -eq "$i" ]; then exit -1 ; fi ;
-    done
-  - echo "`date -u` - Changing default admin password"
-  - docker exec autobuild_$SPLKMGMT entrypoint.sh splunk edit user admin -password $RANDOM_PASSWORD -role admin -auth admin:random_password
+  - for i in `seq 0 5 100`; do if curl --fail -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/server/info &> /dev/null; 
+    then break; fi; echo "`date -u` - Waited $i seconds for container to start" ; 
+    sleep 5 ; if [ 100 -eq "$i" ]; then exit -1 ; fi ; done
 
 install:
   - echo "`date -u` - Enabling test inputs"
@@ -51,6 +42,7 @@ install:
     grep "\"disabled\">0" &> /dev/null
 
 script:
+  - echo "`date -u` - Checking if test modular input is not disabled"
   - echo "`date -u` - Checking if TA was installed successfully and enabled"
   - curl --fail -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/apps/local/TA-connectivity | grep "\"disabled\">0" &>/dev/null
   - echo "Checking if modular input is not broken"
@@ -75,5 +67,7 @@ script:
     /opt/splunk/bin/splunk cmd python /opt/splunk/etc/apps/TA-connectivity/bin/connect.py
 
 env:
-  - "SPLUNK_VERSION=6.6.1 SPLKMGMT=9990"
+  - "SPLUNK_VERSION=7.2 SPLKMGMT=9990"
+  - "SPLUNK_VERSION=7.3 SPLKMGMT=9990"
+  - "SPLUNK_VERSION=8.0 SPLKMGMT=9990"
   - "SPLUNK_VERSION=latest SPLKMGMT=9991"
