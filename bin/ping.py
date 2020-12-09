@@ -12,14 +12,11 @@ Licence:    Creative Commons BY 3.0
 
 # module imports
 import os
-import sys
 import csv
-from connectivity_lib.pinger import *
-from exceptions import *
-from constants import *
-from multiprocessing import Pool
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "lib"))
+import sys
 from splunklib.modularinput import *
+from connectivity_lib.pinger import *
+from multiprocessing import Pool
 
 
 class Ping(Script):
@@ -120,7 +117,6 @@ class Ping(Script):
                     self.disable_input(lookup_path)
                     ew.log(EventWriter.ERROR, "Disabling input because host_field not found in header")
                     raise ConnectivityExceptionFieldNotFound(host_field)
-
 
 if __name__ == "__main__":
     sys.exit(Ping().run(sys.argv))

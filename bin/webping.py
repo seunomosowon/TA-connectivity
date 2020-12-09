@@ -15,8 +15,6 @@ import os
 import sys
 from splunklib.modularinput import *
 from connectivity_lib.webtest import *
-from exceptions import *
-from constants import *
 from multiprocessing import Pool
 
 
@@ -138,7 +136,6 @@ class WebPing(Script):
                     self.disable_input(lookup_file)
                     ew.log(EventWriter.ERROR, "Disabling input because host_field not found in header")
                     raise ConnectivityExceptionFieldNotFound(host_field)
-
 
 if __name__ == "__main__":
     sys.exit(WebPing().run(sys.argv))
