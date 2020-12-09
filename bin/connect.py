@@ -9,14 +9,15 @@ Copyright:  (c) seunomosowon 2016
 Licence:    Creative Commons BY 3.0
 -------------------------------------------------------------------------------
 """
-
 # module imports
 import os
-import csv
 import sys
-from splunklib.modularinput import *
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "lib"))
+import csv
 from connectivity_lib.connect_test import *
 from multiprocessing import Pool
+from splunklib.modularinput import *
+from constants import NUM_OF_WORKER_PROCESSES
 
 
 class Connect(Script):
@@ -138,6 +139,7 @@ class Connect(Script):
                     self.disable_input(lookup_path)
                     ew.log(EventWriter.ERROR, "Disabling input because host_field not found in header")
                     raise ConnectivityExceptionFieldNotFound(host_field)
+
 
 if __name__ == "__main__":
     sys.exit(Connect().run(sys.argv))
