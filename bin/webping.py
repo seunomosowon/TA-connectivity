@@ -15,6 +15,7 @@ import os
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "lib"))
 import csv
+from splunklib import six
 from splunklib.modularinput import *
 from connectivity_lib.webtest import *
 from exceptions import *
@@ -103,7 +104,7 @@ class WebPing(Script):
         :param inputs: an InputDefinition object
         :param ew: an EventWriter object
         """
-        for input_name, input_item in inputs.inputs.iteritems():
+        for input_name, input_item in six.iteritems(inputs.inputs):
             lookup_file = input_name.split('://')[1]
             host_field = input_item['host_field']
             web_timeout = input_item['web_timeout']

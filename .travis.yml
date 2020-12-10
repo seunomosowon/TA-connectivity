@@ -25,46 +25,43 @@ before_install:
   - for i in `seq 0 5 100`; do if curl --fail -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/server/info &> /dev/null; 
     then break; fi; echo "`date -u` - Waited $i seconds for container to start" ; 
     sleep 5 ; if [ 100 -eq "$i" ]; then exit -1 ; fi ; done
+  - echo "`date -u` - Installing TA"
+  - docker cp $TRAVIS_BUILD_DIR autobuild_$SPLKMGMT:/opt/splunk/etc/apps/
+  - docker exec autobuild_$SPLKMGMT sudo chown -R splunk.splunk /opt/splunk/etc/apps/TA-connectivity
+
 
 install:
   - echo "`date -u` - Enabling test inputs"
   - curl --fail -k -u admin:$RANDOM_PASSWORD -X POST
-    https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/ping/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile.csv/enable |
+    https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/ping/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile.csv/enable 2>&1 |
     grep "\"disabled\">0" &> /dev/null
   - curl --fail -k -u admin:$RANDOM_PASSWORD -X POST
-    https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/webping/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile.csv/enable |
+    https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/webping/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile.csv/enable 2>&1 |
     grep "\"disabled\">0" &> /dev/null
   - curl --fail -k -u admin:$RANDOM_PASSWORD -X POST
-    https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/connect/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile.csv/enable |
+    https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/connect/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile.csv/enable 2>&1 |
     grep "\"disabled\">0" &> /dev/null
   - curl --fail -k -u admin:$RANDOM_PASSWORD -X POST
-    https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/connect/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile2.csv/enable |
+    https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/connect/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile2.csv/enable 2>&1 |
     grep "\"disabled\">0" &> /dev/null
 
 script:
   - echo "`date -u` - Checking if test modular input is not disabled"
   - echo "`date -u` - Checking if TA was installed successfully and enabled"
-  - curl --fail -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/apps/local/TA-connectivity | grep "\"disabled\">0" &>/dev/null
+  - curl --fail -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/apps/local/TA-connectivity 2>&1  | grep "\"disabled\">0" &>/dev/null
   - echo "Checking if modular input is not broken"
-  - curl --fail -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/data/modular-inputs/ping &> /dev/null
-  - curl --fail -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/data/modular-inputs/webping &> /dev/null
-  - curl --fail -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/data/modular-inputs/connect &> /dev/null
-  - docker exec autobuild_$SPLKMGMT entrypoint.sh
-    splunk cmd splunkd print-modinput-config ping ping:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.csv |
-    docker exec -i autobuild_$SPLKMGMT
-    /opt/splunk/bin/splunk cmd python /opt/splunk/etc/apps/TA-connectivity/bin/ping.py
-  - docker exec autobuild_$SPLKMGMT entrypoint.sh
-    splunk cmd splunkd print-modinput-config webping webping:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.csv |
-    docker exec -i autobuild_$SPLKMGMT
-    /opt/splunk/bin/splunk cmd python /opt/splunk/etc/apps/TA-connectivity/bin/webping.py
-  - docker exec autobuild_$SPLKMGMT entrypoint.sh
-    splunk cmd splunkd print-modinput-config connect connect:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile.csv |
-    docker exec -i autobuild_$SPLKMGMT
-    /opt/splunk/bin/splunk cmd python /opt/splunk/etc/apps/TA-connectivity/bin/connect.py
-  - docker exec autobuild_$SPLKMGMT entrypoint.sh
-    splunk cmd splunkd print-modinput-config connect connect:///opt/splunk/etc/apps/TA-connectivity/lookups/hostfile2.csv |
-    docker exec -i autobuild_$SPLKMGMT
-    /opt/splunk/bin/splunk cmd python /opt/splunk/etc/apps/TA-connectivity/bin/connect.py
+  - curl --fail -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/data/modular-inputs/ping 2>&1 &> /dev/null
+  - curl --fail -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/data/modular-inputs/webping 2>&1 &> /dev/null
+  - curl --fail -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/data/modular-inputs/connect 2>&1 &> /dev/null
+  - echo "Check internal logs for Execprocessor events"
+  - curl --get -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/search/jobs/export
+    --data-urlencode search="search index=_internal sourcetype=splunkd (component=ModularInputs
+    OR component=ExecProcessor) (connect.py OR webping.py OR ping.py) | head 20 | table _time _raw" -d output_mode=csv
+    -d earliest="-1h" -d latest=now
+  - echo "Display actual events"
+  - curl --get -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/search/jobs/export
+    --data-urlencode search="search index=main sourcetype=mail* | dedup 6 sourcetype | table _time sourcetype source _raw" 
+    -d output_mode=raw -d earliest="-365d" -d latest=now ;
 
 env:
   - "SPLUNK_VERSION=7.2 SPLKMGMT=9990"
