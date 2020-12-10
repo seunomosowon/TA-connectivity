@@ -15,6 +15,7 @@ import os
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "lib"))
 import csv
+from splunklib import six
 from connectivity_lib.pinger import *
 from exceptions import *
 from constants import *
@@ -95,7 +96,7 @@ class Ping(Script):
         :param inputs: an InputDefinition object
         :param ew: an EventWriter object
         """
-        for input_name, input_item in inputs.inputs.iteritems():
+        for input_name, input_item in six.iteritems(inputs.inputs):
             lookup_path = input_name.split('://')[1]
             host_field = input_item['host_field']
             num_of_workers = int(input_item['workers'])

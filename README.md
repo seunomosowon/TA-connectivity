@@ -423,9 +423,6 @@ Test 3: Connect modular input
     **host_field** - This identifies the column name in the csv that will contain host names to be pinged.
     This can be in the form of hostname:port or ip:port when using connect, without specifying a port_field 
 
-    **host_field** - This marks the column name in the csv that will contain hostnames to be tested.
-    This can be in the form of hostname:port or IP:port if the port_field is not specified.
-
     **workers** - This is an optional parameter which specifies how many worker processes should be used for a specific 
     instance of this modular input.
 

@@ -2,7 +2,7 @@
 This includes all exceptions defined for technology addon.
 """
 
-from httplib import HTTPException
+from http.client import HTTPException
 
 
 class ConnectivityException(Exception):
