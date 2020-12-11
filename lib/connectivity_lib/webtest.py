@@ -3,6 +3,8 @@ This includes functions to be used for web connectivity tests to a given URL.
 Functions here support the 'webping://' modular input
 """
 
+from future.standard_library import install_aliases
+install_aliases()
 import re
 from urllib.request import urlopen
 from urllib.parse import urlparse
