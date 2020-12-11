@@ -2,9 +2,6 @@ notifications:
   email: true
 
 sudo: required
-os: linux
-dist: focal
-
 
 language: generic
 
@@ -58,16 +55,17 @@ install:
 
 script:
   - echo "Check internal logs for Execprocessor events"
-  - curl --get -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/search/jobs/export
-    --data-urlencode search="search index=_internal sourcetype=splunkd (component=ModularInputs
-    OR component=ExecProcessor) (connect.py OR webping.py OR ping.py) | head 20 | table _time _raw" -d output_mode=csv
+  - curl --get -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/search/jobs/export \
+    --data-urlencode search="search index=_internal sourcetype=splunkd (component=ModularInputs \
+    OR component=ExecProcessor) (connect.py OR webping.py OR ping.py) | head 20 | table _time _raw" -d output_mode=raw \
     -d earliest="-1h" -d latest=now
   - echo "Display actual events"
   - curl --get -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/search/jobs/export
-    --data-urlencode search="search index=main sourcetype=mail* | dedup 6 sourcetype | table _time sourcetype source _raw" 
+    --data-urlencode search="search index=main sourcetype=*ping | dedup 6 sourcetype | table _time sourcetype source _raw" 
     -d output_mode=raw -d earliest="-365d" -d latest=now ;
 
 env:
   - "SPLUNK_VERSION=7.2 SPLKMGMT=9990"
   - "SPLUNK_VERSION=7.3 SPLKMGMT=9991"
-  - "SPLUNK_VERSION=latest SPLKMGMT=9992"
+  - "SPLUNK_VERSION=8.0 SPLKMGMT=9992"
+  - "SPLUNK_VERSION=latest SPLKMGMT=9993"
