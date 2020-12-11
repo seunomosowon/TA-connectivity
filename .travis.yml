@@ -55,9 +55,9 @@ install:
 
 script:
   - echo "Check internal logs for Execprocessor events"
-  - curl --get -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/search/jobs/export \
-    --data-urlencode search="search index=_internal sourcetype=splunkd (component=ModularInputs \
-    OR component=ExecProcessor) (connect.py OR webping.py OR ping.py) | head 20 | table _time _raw" -d output_mode=raw \
+  - curl --get -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/search/jobs/export 
+    --data-urlencode search="search index=_internal sourcetype=splunkd (component=ModularInputs 
+    OR component=ExecProcessor) (connect.py OR webping.py OR ping.py) | head 20 | table _time _raw" -d output_mode=raw 
     -d earliest="-1h" -d latest=now
   - echo "Display actual events"
   - curl --get -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/search/jobs/export
