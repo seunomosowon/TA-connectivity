@@ -2,6 +2,7 @@ notifications:
   email: true
 
 sudo: required
+dist: focal
 
 language: generic
 
@@ -25,6 +26,8 @@ before_install:
   - for i in `seq 0 5 100`; do if curl --fail -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/server/info &> /dev/null; 
     then break; fi; echo "`date -u` - Waited $i seconds for container to start" ; 
     sleep 5 ; if [ 100 -eq "$i" ]; then echo "Splunk not started, exiting..."; exit -1 ; fi ; done
+
+install:
   - echo "`date -u` - Installing TA"
   - docker cp $TRAVIS_BUILD_DIR autobuild_$SPLKMGMT:/opt/splunk/etc/apps/
   - docker exec autobuild_$SPLKMGMT sudo chown -R splunk.splunk /opt/splunk/etc/apps/TA-connectivity
@@ -38,8 +41,6 @@ before_install:
   - curl --fail -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/data/modular-inputs/ping 2>&1 &> /dev/null
   - curl --fail -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/data/modular-inputs/webping 2>&1 &> /dev/null
   - curl --fail -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/data/modular-inputs/connect 2>&1 &> /dev/null
-
-install:
   - echo "`date -u` - Enabling test inputs"
   - curl --fail -k -u admin:$RANDOM_PASSWORD -X POST
     https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/ping/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile.csv/enable 2>&1 | grep "\"disabled\">0" 
@@ -55,14 +56,12 @@ install:
 
 script:
   - echo "Check internal logs for Execprocessor events"
-  - curl --get -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/search/jobs/export 
-    --data-urlencode search="search index=_internal sourcetype=splunkd (component=ModularInputs 
-    OR component=ExecProcessor) (connect.py OR webping.py OR ping.py) | head 20 | table _time _raw" -d output_mode=raw 
-    -d earliest="-1h" -d latest=now
+  - curl --get -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/search/jobs/export -d latest=now --data-urlencode 
+    search="search index=_internal sourcetype=splunkd (component=ModularInputs OR component=ExecProcessor) (connect.py OR webping.py OR ping.py) | head 20 | table _time _raw" -d output_mode="raw" -d earliest="-1h" 
   - echo "Display actual events"
   - curl --get -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/search/jobs/export
     --data-urlencode search="search index=main sourcetype=*ping | dedup 6 sourcetype | table _time sourcetype source _raw" 
-    -d output_mode=raw -d earliest="-365d" -d latest=now ;
+    -d output_mode=raw -d earliest="-365d" -d latest=now
 
 env:
   - "SPLUNK_VERSION=7.2 SPLKMGMT=9990"
