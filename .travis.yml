@@ -2,6 +2,9 @@ notifications:
   email: true
 
 sudo: required
+os: linux
+dist: focal
+
 
 language: generic
 
@@ -24,14 +27,13 @@ before_install:
   - docker start autobuild_$SPLKMGMT
   - for i in `seq 0 5 100`; do if curl --fail -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/server/info &> /dev/null; 
     then break; fi; echo "`date -u` - Waited $i seconds for container to start" ; 
-    sleep 5 ; if [ 100 -eq "$i" ]; then exit -1 ; fi ; done
+    sleep 5 ; if [ 100 -eq "$i" ]; then echo "Splunk not started, exiting..."; exit -1 ; fi ; done
   - echo "`date -u` - Installing TA"
   - docker cp $TRAVIS_BUILD_DIR autobuild_$SPLKMGMT:/opt/splunk/etc/apps/
   - docker exec autobuild_$SPLKMGMT sudo chown -R splunk.splunk /opt/splunk/etc/apps/TA-connectivity
   - echo "`date -u` - Restarting splunk"
-  - curl -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/server/control/restart
-    -X POST &>/dev/null
-  - sleep 15
+  - curl -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/server/control/restart -X POST &>/dev/null
+  - sleep 20
   - echo "`date -u` - Checking if test modular input is not disabled"
   - echo "`date -u` - Checking if TA was installed successfully and enabled"
   - curl --fail -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/apps/local/TA-connectivity 2>&1  | grep "\"disabled\">0" &>/dev/null
@@ -43,17 +45,16 @@ before_install:
 install:
   - echo "`date -u` - Enabling test inputs"
   - curl --fail -k -u admin:$RANDOM_PASSWORD -X POST
-    https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/ping/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile.csv/enable 2>&1 |
-    grep "\"disabled\">0" &> /dev/null
-  - curl --fail -k -u admin:$RANDOM_PASSWORD -X POST
+    https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/ping/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile.csv/enable 2>&1 | grep "\"disabled\">0" 
+  - curl --fail -k -u admin:$RANDOM_PASSWORD -X POST 
     https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/webping/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile.csv/enable 2>&1 |
-    grep "\"disabled\">0" &> /dev/null
+    grep "\"disabled\">0" 
   - curl --fail -k -u admin:$RANDOM_PASSWORD -X POST
     https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/connect/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile.csv/enable 2>&1 |
-    grep "\"disabled\">0" &> /dev/null
+    grep "\"disabled\">0" 
   - curl --fail -k -u admin:$RANDOM_PASSWORD -X POST
     https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/connect/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile2.csv/enable 2>&1 |
-    grep "\"disabled\">0" &> /dev/null
+    grep "\"disabled\">0" 
 
 script:
   - echo "Check internal logs for Execprocessor events"
@@ -69,5 +70,4 @@ script:
 env:
   - "SPLUNK_VERSION=7.2 SPLKMGMT=9990"
   - "SPLUNK_VERSION=7.3 SPLKMGMT=9991"
-  - "SPLUNK_VERSION=8.0 SPLKMGMT=9992"
-  - "SPLUNK_VERSION=latest SPLKMGMT=9993"
+  - "SPLUNK_VERSION=latest SPLKMGMT=9992"
