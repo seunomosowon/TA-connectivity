@@ -3,7 +3,7 @@ notifications:
 
 sudo: required
 
-language: generic
+language: minimal
 
 services:
   - docker
