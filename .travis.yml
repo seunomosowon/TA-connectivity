@@ -2,7 +2,6 @@ notifications:
   email: true
 
 sudo: required
-dist: focal
 
 language: generic
 
