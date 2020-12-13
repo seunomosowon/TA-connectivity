@@ -33,29 +33,30 @@ install:
   - echo "`date -u` - Restarting splunk"
   - curl -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/server/control/restart -X POST &>/dev/null
   - sleep 20
-  - echo "`date -u` - Checking if test modular input is not disabled"
-  - echo "`date -u` - Checking if TA was installed successfully and enabled"
-  - curl --fail -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/apps/local/TA-connectivity 2>&1  | grep "\"disabled\">0" &>/dev/null
-  - echo "Checking if modular input is not broken"
-  - curl --fail -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/data/modular-inputs/ping 2>&1 &> /dev/null
-  - curl --fail -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/data/modular-inputs/webping 2>&1 &> /dev/null
-  - curl --fail -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/data/modular-inputs/connect 2>&1 &> /dev/null
-  - echo "`date -u` - Enabling test inputs"
-  - curl --fail -k -u admin:$RANDOM_PASSWORD -X POST
-    https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/ping/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile.csv/enable 2>&1 | grep "\"disabled\">0" 
-  - curl --fail -k -u admin:$RANDOM_PASSWORD -X POST 
-    https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/webping/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile.csv/enable 2>&1 | grep "\"disabled\">0" 
-  - curl --fail -k -u admin:$RANDOM_PASSWORD -X POST
-    https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/connect/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile.csv/enable 2>&1 | grep "\"disabled\">0" 
-  - curl --fail -k -u admin:$RANDOM_PASSWORD -X POST
-    https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/connect/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile2.csv/enable 2>&1 | grep "\"disabled\">0" 
-  - echo "Check internal logs for Execprocessor events"
-  - curl -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/search/jobs/export -d latest=now 
-    -d  search="search index=_internal sourcetype=splunkd (component=ModularInputs OR component=ExecProcessor) (connect.py OR webping.py OR ping.py) | head 20 | table _time _raw" --get -d earliest=-1h 
-  - echo "Display actual events"
-  - curl -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/search/jobs/export 
-    -d search="search index=main sourcetype=*ping | dedup 6 sourcetype | table _time sourcetype source _raw" 
-    --get -d earliest=-365d -d latest=now
+script:
+- echo "`date -u` - Checking if TA was installed successfully and enabled"
+- curl --fail -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/apps/local/TA-connectivity 2>&1  | grep "\"disabled\">0" &>/dev/null
+- echo "Checking if modular input is not broken"
+- curl --fail -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/data/modular-inputs/ping 2>&1 &> /dev/null
+- curl --fail -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/data/modular-inputs/webping 2>&1 &> /dev/null
+- curl --fail -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/data/modular-inputs/connect 2>&1 &> /dev/null
+- echo "`date -u` - Enabling test inputs"
+- curl --fail -k -u admin:$RANDOM_PASSWORD -X POST
+  https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/ping/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile.csv/enable 2>&1 | grep "\"disabled\">0" 
+- curl --fail -k -u admin:$RANDOM_PASSWORD -X POST 
+  https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/webping/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile.csv/enable 2>&1 | grep "\"disabled\">0" 
+- curl --fail -k -u admin:$RANDOM_PASSWORD -X POST
+  https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/connect/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile.csv/enable 2>&1 | grep "\"disabled\">0" 
+- curl --fail -k -u admin:$RANDOM_PASSWORD -X POST
+  https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/connect/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile2.csv/enable 2>&1 | grep "\"disabled\">0" 
+- echo "Check internal logs for Execprocessor events"
+- curl -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/search/jobs/export 
+  -d latest=now -d  search="search index=_internal sourcetype=splunkd (component=ModularInputs OR component=ExecProcessor) (connect.py OR webping.py OR ping.py) | head 20 | table _time _raw"  
+  -d output_mode=csv -d earliest="-1h" -d latest=now
+- echo "Display actual events"
+- curl --get -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/search/jobs/export
+  --data-urlencode  search="search index=main sourcetype=*ping | dedup 6 sourcetype | table _time sourcetype source _raw" 
+  -d output_mode=csv -d earliest="-1h" -d latest=now
 
 env:
   - "SPLUNK_VERSION=7.2 SPLKMGMT=9990"
