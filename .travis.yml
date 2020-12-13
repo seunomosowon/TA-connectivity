@@ -6,33 +6,32 @@ sudo: required
 language: minimal
 
 services:
-  - docker
+- docker
 
 before_install:
-  - export SPLUNK_HOME="/opt/splunk"
-  - export RANDOM_PASSWORD=$(openssl rand -hex 20)
-  # Pull docker image
-  - docker pull splunk/splunk
+- export SPLUNK_HOME="/opt/splunk"
+- export RANDOM_PASSWORD=$(openssl rand -hex 20)
+# Pull docker image
+- docker pull splunk/splunk
   # Add DOCKER to iptables, 1/10 times this is needed, force 0 exit status
-  - sudo iptables -N DOCKER || true
-  - sudo iptables -I INPUT -p tcp --dport $SPLKMGMT -j ACCEPT || true
-  # Start Docker container
-  - docker create --name autobuild_$SPLKMGMT --hostname autobuild -v /opt/splunk/etc/apps
-    -e "SPLUNK_PASSWORD=$RANDOM_PASSWORD" -e "SPLUNK_START_ARGS=--accept-license" -p "$SPLKMGMT:8089"
-    -e "SPLUNK_USER=splunk" splunk/splunk:$SPLUNK_VERSION
-  - echo "`date -u` - Starting container"
-  - docker start autobuild_$SPLKMGMT
-  - for i in `seq 0 5 100`; do if curl --fail -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/server/info &> /dev/null; 
-    then break; fi; echo "`date -u` - Waited $i seconds for container to start" ; 
-    sleep 5 ; if [ 100 -eq "$i" ]; then echo "Splunk not started, exiting..."; exit -1 ; fi ; done
-
+- sudo iptables -N DOCKER || true
+- sudo iptables -I INPUT -p tcp --dport $SPLKMGMT -j ACCEPT || true
+# Start Docker container
+- docker create --name autobuild_$SPLKMGMT --hostname autobuild -v /opt/splunk/etc/apps
+  -e "SPLUNK_PASSWORD=$RANDOM_PASSWORD" -e "SPLUNK_START_ARGS=--accept-license" -p "$SPLKMGMT:8089"
+  -e "SPLUNK_USER=splunk" splunk/splunk:$SPLUNK_VERSION
+- echo "`date -u` - Starting container"
+- docker start autobuild_$SPLKMGMT
+- for i in `seq 0 5 100`; do if curl --fail -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/server/info &> /dev/null; 
+  then break; fi; echo "`date -u` - Waited $i seconds for container to start" ; 
+  sleep 5 ; if [ 100 -eq "$i" ]; then echo "Splunk not started, exiting..."; exit -1 ; fi ; done
 install:
-  - echo "`date -u` - Installing TA"
-  - docker cp $TRAVIS_BUILD_DIR autobuild_$SPLKMGMT:/opt/splunk/etc/apps/
-  - docker exec autobuild_$SPLKMGMT sudo chown -R splunk.splunk /opt/splunk/etc/apps/TA-connectivity
-  - echo "`date -u` - Restarting splunk"
-  - curl -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/server/control/restart -X POST &>/dev/null
-  - sleep 20
+- echo "`date -u` - Installing TA"
+- docker cp $TRAVIS_BUILD_DIR autobuild_$SPLKMGMT:/opt/splunk/etc/apps/
+- docker exec autobuild_$SPLKMGMT sudo chown -R splunk.splunk /opt/splunk/etc/apps/TA-connectivity
+- echo "`date -u` - Restarting splunk"
+- curl -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/server/control/restart -X POST &>/dev/null
+- sleep 20
 script:
 - echo "`date -u` - Checking if TA was installed successfully and enabled"
 - curl --fail -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/apps/local/TA-connectivity 2>&1  | grep "\"disabled\">0" &>/dev/null
@@ -59,7 +58,7 @@ script:
   -d output_mode=csv -d earliest="-1h" -d latest=now
 
 env:
-  - "SPLUNK_VERSION=7.2 SPLKMGMT=9990"
-  - "SPLUNK_VERSION=7.3 SPLKMGMT=9991"
-  - "SPLUNK_VERSION=8.0 SPLKMGMT=9992"
-  - "SPLUNK_VERSION=latest SPLKMGMT=9993"
+- "SPLUNK_VERSION=7.2 SPLKMGMT=9990"
+- "SPLUNK_VERSION=7.3 SPLKMGMT=9991"
+- "SPLUNK_VERSION=8.0 SPLKMGMT=9992"
+- "SPLUNK_VERSION=latest SPLKMGMT=9993"
