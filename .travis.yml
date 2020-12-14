@@ -41,21 +41,20 @@ script:
 - curl --fail -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/data/modular-inputs/connect 2>&1 &> /dev/null
 - echo "`date -u` - Enabling test inputs"
 - curl --fail -k -u admin:$RANDOM_PASSWORD -X POST
-  https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/ping/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile.csv/enable 2>&1 | grep "\"disabled\">0" 
+  https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/ping/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile.csv/enable 2>&1 | grep -q "\"disabled\">0" 
 - curl --fail -k -u admin:$RANDOM_PASSWORD -X POST 
-  https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/webping/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile.csv/enable 2>&1 | grep "\"disabled\">0" 
+  https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/webping/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile.csv/enable 2>&1 | grep -q "\"disabled\">0" 
 - curl --fail -k -u admin:$RANDOM_PASSWORD -X POST
-  https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/connect/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile.csv/enable 2>&1 | grep "\"disabled\">0" 
+  https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/connect/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile.csv/enable 2>&1 | grep -q "\"disabled\">0"
 - curl --fail -k -u admin:$RANDOM_PASSWORD -X POST
-  https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/connect/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile2.csv/enable 2>&1 | grep "\"disabled\">0" 
+  https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/connect/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile2.csv/enable 2>&1 | grep -q "\"disabled\">0" 
 - echo "Check internal logs for Execprocessor events"
-- curl --get -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/search/jobs/export 
-  --data-urlencode  search="search index=_internal sourcetype=splunkd (component=ModularInputs OR component=ExecProcessor) (connect.py OR webping.py OR ping.py) | head 20 | table _time _raw"    
-  -d output_mode=csv -d earliest="-1h" -d latest=now ;
+- curl --get -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/search/jobs/export
+  --data-urlencode search='search index=_internal sourcetype=splunkd (component=ModularInputs OR component=ExecProcessor) (connect.py OR webping.py OR ping.py) | head 20 | table _time _raw" 
+  -d output_mode=csv -d earliest="-1h" -d latest=now
 - echo "Display actual events"
-- curl --get -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/search/jobs/export 
-  --data-urlencode search="search index=main sourcetype=*ping | dedup 6 sourcetype | table _time sourcetype source _raw" -d output_mode=raw -d earliest="-2h" -d latest=now ;
-
+- curl --get -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/search/jobs/export
+  --data-urlencode search='search index=main sourcetype=*ping | head 20 | table _time sourcetype _raw' -d output_mode=csv -d earliest="-1h" -d latest=now
 env:
 - "SPLUNK_VERSION=7.2 SPLKMGMT=9990"
 - "SPLUNK_VERSION=7.3 SPLKMGMT=9991"
