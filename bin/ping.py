@@ -13,13 +13,14 @@ Licence:    Creative Commons BY 3.0
 from __future__ import unicode_literals
 import os
 import sys
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "lib"))
 import csv
+from multiprocessing import Pool
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "lib"))
 from splunklib import six
 from connectivity_lib.pinger import *
 from exceptions import *
 from constants import *
-from multiprocessing import Pool
 from splunklib.modularinput import *
 
 
