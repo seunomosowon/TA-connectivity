@@ -48,13 +48,16 @@ script:
   https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/connect/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile.csv/enable 2>&1 | grep -q "\"disabled\">0"
 - curl --fail -k -u admin:$RANDOM_PASSWORD -X POST
   https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/connect/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile2.csv/enable 2>&1 | grep -q "\"disabled\">0" 
+- echo "`date -u` - Restarting splunk"
+- curl -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/server/control/restart -X POST &>/dev/null
+- sleep 20
 - echo "Check internal logs for Execprocessor events"
-- curl --get -f -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/search/jobs/export?output_mode=json
+- curl --get -f -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/search/jobs/export
   --data-urlencode search='search index=_internal sourcetype=splunkd (component=ModularInputs OR component=ExecProcessor) (connect.py OR webping.py OR ping.py) | head 20 | table _time _raw' 
   -d earliest="-365d" -d latest=now
 - echo "Display actual events"
-- curl --get -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/search/jobs/export?output_mode=json
-  --data-urlencode search='search index=* sourcetype=*ping | head 50 | table _time sourcetype _raw' -d output_mode=csv -d earliest=-365d -d latest=now | python -m json.tool
+- curl --get -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/search/jobs/export
+  --data-urlencode search='search index=main sourcetype=*ping | head 50 | table _time sourcetype _raw' -d output_mode=csv -d earliest=-5y -d latest=now 
 env:
 - "SPLUNK_VERSION=7.2 SPLKMGMT=9990"
 - "SPLUNK_VERSION=7.3 SPLKMGMT=9991"
