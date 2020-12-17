@@ -55,9 +55,9 @@ script:
   echo "`date -u` - Waited $i seconds for container to restart" ; sleep 5 ;
   if [ "100" -eq "$i" ]; then echo "Splunk not started, exiting..."; exit -1 ; fi ; done
 - echo "Check internal logs for Execprocessor events"
-- curl --get -fk -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/search/jobs/export --data-urlencode search='search index=_internal sourcetype=splunkd (component=ModularInputs OR component=ExecProcessor) (connect.py OR webping.py OR ping.py) | head 20 | table _time _raw'  -d output_mode=csv -d earliest="-7d" -d latest=now
+- curl --get -f -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/search/jobs/export --data-urlencode search='search index=_internal sourcetype=splunkd (component=ModularInputs OR component=ExecProcessor) (connect.py OR webping.py OR ping.py) | head 20 | table _time _raw' -d earliest="-365d" -d latest=now -d output_mode=raw
 - echo "Display actual events"
-- curl --get -fk -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/search/jobs/export --data-urlencode search='search index=main sourcetype=*ping | head 50 | table _time sourcetype _raw' -d output_mode=csv -d earliest="-7d" -d latest=now
+- curl --get -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/search/jobs/export --data-urlencode search='search index=main sourcetype=*ping | head 50 | table _time sourcetype _raw' -d output_mode=raw -d earliest=-5y -d latest=now
 env:
 - "SPLUNK_VERSION=7.2 SPLKMGMT=9990"
 - "SPLUNK_VERSION=7.3 SPLKMGMT=9991"
