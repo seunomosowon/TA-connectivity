@@ -43,8 +43,8 @@
 
 | Author | Oluwaseun Remi-Omosowon |
 | --- | --- |
-| App Version | 1.0 |
-| Vendor Products | <ul><li>SDK for Python 1.6.0</li></ul> |
+| App Version | 1.2.0 |
+| Vendor Products | <ul><li>SDK for Python 1.6.14</li></ul> |
 
 The TA-connectivity app can be used to gather host connectivity information. 
 It leverages the multiprocessing library in python using a pool of 4 workers. 
@@ -62,15 +62,15 @@ This app adds 3 modular inputs to any Splunk installation:
 2. webping://
 3. connect://
 
-This also allows the specification of of how many threads should be used to handle a the provided list of hosts.
+This also allows the specification of how many threads should be used to handle a provided list of hosts.
 
 ##### Scripts and binaries
 
 Includes:
-- Splunk SDK for Python (1.6.0)
+- Splunk SDK for Python (1.6.14)
 - mail_lib - supports the calculation of vincenty distances which is used by default
     - ping.py - Tests connectivity using ICMP to multiple systems
-    - webping - tests connectivity to mulyiple web application given the application URLs
+    - webping - tests connectivity to multiple web application given the application URLs
     - connect - Checks TCP connectivity to a given socket (hostname and port)
     - connectivity_lib - library with exception handling, constants, and utility functions used for actually 
       connecting to hosts. 
@@ -83,9 +83,9 @@ Includes:
 #### Release notes
 
 ##### About this release
-Version 1.0 of the TA-connectivity is compatible with:
+Version 1.2.0 of the TA-connectivity is compatible with:
 
-| Splunk Enterprise versions | 6.x |
+| Splunk Enterprise versions | 6.x, 7.x, 8.x |
 | --- | --- |
 | CIM | Not Applicable |
 | Platforms | Platform independent |
@@ -101,18 +101,16 @@ as it requires Python which comes with an HF or a full Splunk install.
 
 ##### New features
 
-TA-connectivity v1.0 includes the following new features:
+TA-connectivity v1.2.0 includes the following new features:
 
-- Improved documentation
-- Added configuration to allow automated tests of all modular inputs added by this TA via [Travis CI](http://travis-ci.org/)  
-- Removed interval from inputs.conf.spec to pass appinspection
-- Fixed exception handling for connect where connection is refused
-- Refactored code to reduce imports all over the place.
+- Added support for Python3  and Splunk v8.x
+- Updated CI/CD tests [Travis CI](http://travis-ci.org/)  
+
 
 ##### Known issues
 
-Currently no known issues in version 1.0 of TA-connectivity. 
-Issues can be reported on Splunkbase or Github at this time.
+There's no known issues in version 1.2.0 of TA-connectivity. 
+Issues can be reported on Splunkbase or Github at this time. 
 
 
 ##### Third-party software attributions
@@ -141,6 +139,13 @@ Feedback and feature requests can also be sent via Splunkbase.
 Issues can also be submitted at the [TA-connectivity repo via on Github](https://github.com/seunomosowon/TA-connectivity/issues)
 
 ##### Older Releases
+
+- v1.0
+* Improved documentation
+* Added configuration to allow automated tests of all modular inputs added by this TA via [Travis CI](http://travis-ci.org/)  
+* Removed "interval" from inputs.conf.spec to pass appinspection
+* Fixed exception handling for connect where connection is refused
+* Refactored code to reduce imports all over the place.
 
 - v0.4.8
 * Fixed bug with pinger script for windows
