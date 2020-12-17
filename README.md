@@ -67,7 +67,7 @@ This also allows the specification of how many threads should be used to handle 
 ##### Scripts and binaries
 
 Includes:
-- Splunk SDK for Python (1.6.0)
+- Splunk SDK for Python (1.6.14)
 - mail_lib - supports the calculation of vincenty distances which is used by default
     - ping.py - Tests connectivity using ICMP to multiple systems
     - webping - tests connectivity to multiple web application given the application URLs
@@ -83,9 +83,9 @@ Includes:
 #### Release notes
 
 ##### About this release
-Version 1.0 of the TA-connectivity is compatible with:
+Version 1.2.0 of the TA-connectivity is compatible with:
 
-| Splunk Enterprise versions | 6.x |
+| Splunk Enterprise versions | 6.x, 7.x, 8.x |
 | --- | --- |
 | CIM | Not Applicable |
 | Platforms | Platform independent |
@@ -143,7 +143,7 @@ Issues can also be submitted at the [TA-connectivity repo via on Github](https:/
 - v1.0
 * Improved documentation
 * Added configuration to allow automated tests of all modular inputs added by this TA via [Travis CI](http://travis-ci.org/)  
-* Removed interval from inputs.conf.spec to pass appinspection
+* Removed "interval" from inputs.conf.spec to pass appinspection
 * Fixed exception handling for connect where connection is refused
 * Refactored code to reduce imports all over the place.
 
