@@ -50,10 +50,7 @@ script:
   https://localhost:$SPLKMGMT/servicesNS/nobody/TA-connectivity/data/inputs/connect/%252Fopt%252Fsplunk%252Fetc%252Fapps%252FTA-connectivity%252Flookups%252Fhostfile2.csv/enable 2>&1 | grep -q "\"disabled\">0" 
 - echo "`date -u` - Restarting splunk"
 - curl -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/server/control/restart -X POST &>/dev/null
-- for i in `seq 0 5 100`;
-  do if curl --fail -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/server/info &> /dev/null; then break; fi;
-  echo "`date -u` - Waited $i seconds for container to restart" ; sleep 5 ;
-  if [ "100" -eq "$i" ]; then echo "Splunk not started, exiting..."; exit -1 ; fi ; done
+- sleep 20
 - echo "Check internal logs for Execprocessor events"
 - curl --get -f -k -u admin:$RANDOM_PASSWORD https://localhost:$SPLKMGMT/services/search/jobs/export --data-urlencode search='search index=_internal sourcetype=splunkd (component=ModularInputs OR component=ExecProcessor) (connect.py OR webping.py OR ping.py) | head 20 | table _time _raw' -d earliest="-365d" -d latest=now -d output_mode=raw
 - echo "Display actual events"
